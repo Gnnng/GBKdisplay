@@ -47,17 +47,33 @@ shiftFlag = False
 posx, posy = (400 ,300)
 cursorVelocity = 10
 psize = 2
+charSpeed = 1000
+clock = pygame.time.Clock()
 
+move = {K_LEFT:0, K_RIGHT:0, K_UP:0, K_DOWN:0}
+# pygame.key.set_repeat(50, 50)
 while True:
+	timePassed = clock.tick()
+	timePassedSecs = timePassed / 1000.0
+	cursorVelocity = timePassedSecs * charSpeed
+
 	for event in pygame.event.get():
 		if event.type == QUIT:
 			exit()
 		if event.type == KEYUP:
-			if (event.key == K_LCTRL): ctrlFlag = False
-			if (event.key == K_LSHIFT): shiftFlag = False
+			if (event.key == K_LCTRL): 
+				ctrlFlag = False
+			if (event.key == K_LSHIFT): 
+				shiftFlag = False
+			if event.key == K_UP or event.key == K_DOWN or event.key == K_LEFT or event.key == K_RIGHT:
+				move[event.key] = 0
 		if event.type == KEYDOWN:
-			if (event.key == K_LCTRL): ctrlFlag = True
-			if (event.key == K_LSHIFT): shiftFlag = True
+			if (event.key == K_LCTRL): 
+				ctrlFlag = True
+				print "ctrl down"
+			if (event.key == K_LSHIFT): 
+				shiftFlag = True
+				print "shift down"
 			if (event.key == K_ESCAPE): exit()
 			if ctrlFlag and not shiftFlag:
 				if (event.key == K_LEFT) and (wei > 1): wei = wei-1
@@ -68,17 +84,23 @@ while True:
 			if (event.key == K_PAGEUP) and (psize < 30): psize = psize + 1
 			if (event.key == K_PAGEDOWN) and (psize > 1): psize = psize - 1
 			if not ctrlFlag and not shiftFlag:
-				if (event.key == K_LEFT) and (posx > 0): posx = posx - cursorVelocity
-				if (event.key == K_RIGHT) and (posx < SCREEN_SIZE[0]): posx = posx + cursorVelocity
-				if (event.key == K_UP) and (posy > 0): posy = posy - cursorVelocity
-				if (event.key == K_DOWN) and (posy < SCREEN_SIZE[1]): posy = posy + cursorVelocity
-			
+			# 	if (event.key == K_LEFT) and (posx > 0): posx = posx - cursorVelocity
+			# 	if (event.key == K_RIGHT) and (posx < SCREEN_SIZE[0]): posx = posx + cursorVelocity
+			# 	if (event.key == K_UP) and (posy > 0): posy = posy - cursorVelocity
+			# 	if (event.key == K_DOWN) and (posy < SCREEN_SIZE[1]): posy = posy + cursorVelocity
+				if (event.key == K_LEFT) and (posx > 0): 
+					move[K_LEFT] = cursorVelocity				
+				if (event.key == K_RIGHT) and (posx < SCREEN_SIZE[0]): 
+					move[K_RIGHT] = cursorVelocity
+				if (event.key == K_UP) and (posy > 0): 
+					move[K_UP] = cursorVelocity
+				if (event.key == K_DOWN) and (posy < SCREEN_SIZE[1]): 
+					move[K_DOWN] = cursorVelocity
+	posx -= move[K_LEFT]
+	posx +=	move[K_RIGHT]
+	posy -= move[K_UP]
+	posy += move[K_DOWN]
 
 	screen.fill(0)
 	updateHanzi((posx, posy), psize, qu, wei)
 	pygame.display.update()
-
-
-
-
-

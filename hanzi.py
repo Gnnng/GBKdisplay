@@ -1,8 +1,6 @@
 #coding=utf8
 import pygame
 import struct
-# import cv2
-# import numpy
 
 from pygame.locals import *
 from sys import exit
@@ -30,17 +28,15 @@ class Hanzi(pygame.sprite.Sprite):
 		self.rect.topleft = (self.pos[0] - self.hanziSize[0]/2, self.pos[1] - self.hanziSize[1]/2)
 		self.key = {K_LEFT:0, K_RIGHT:0, K_UP:0, K_DOWN:0, K_r:0, K_g:0, K_b:0}
 		self.style = K_BACKQUOTE;
-		self.adjustSizeFlag = False
+		self.adjustSizeFlag f= False
 		self.selectCharFlag = False
 	def keySet(self, event):
 		mods = pygame.key.get_mods()
 		if (mods & KMOD_LALT):
 			self.adjustSizeFlag = True
-			# print 'alt'
 		else:
 			self.adjustSizeFlag = False
 		if (mods & KMOD_LCTRL):
-			# print 'ctrl'
 			self.selectCharFlag = True
 		else:
 			self.selectCharFlag = False
@@ -53,7 +49,6 @@ class Hanzi(pygame.sprite.Sprite):
 	timeCount = 0;
 	def update(self, timePassed):
 		self.timeCount += timePassed
-		# print self.timeCount
 		velocity = timePassed / 1000.0 * self.speed;
 		if self.key[K_r] or self.key[K_g] or self.key[K_b]:
 			r = self.rgb[0] + self.key[K_r]*(self.key[K_UP] - self.key[K_DOWN])
@@ -80,13 +75,11 @@ class Hanzi(pygame.sprite.Sprite):
 			y = self.pos[1] + (self.key[K_DOWN] - self.key[K_UP]) * velocity
 			if x >= 0 and x < SCREEN_SIZE[0] and y >= 0 and y < SCREEN_SIZE[1]:
 				self.pos = (x, y)
-
-
+				
 		if self.style == K_BACKQUOTE: self.style0()
 		if self.style == K_1: self.style1()
 		if self.style == K_2: self.style2()
 		self.image.set_colorkey(Color('white'))
-		# if self.style == K_3: self.style3()
 
 	def style0(self):
 		hzk.seek(32*((self.quwei[0]-1)*94+self.quwei[1]-1))
@@ -148,41 +141,6 @@ class Hanzi(pygame.sprite.Sprite):
 					self.image.blit(foreColor, ((15-j)*pointSize[1] + 0.5 * self.pixelSize * (16 - i), i*pointSize[0]))
 					self.image.blit(foreColor, ((15-j)*pointSize[1] + 0.5 * self.pixelSize * (16 - i) + offset, i*pointSize[0]))
 					self.image.blit(foreColor, ((15-j)*pointSize[1] + 0.5 * self.pixelSize * (16 - i), i*pointSize[0] + offset))
-	# def style3(self):
-	# 	hzk.seek(32*((self.quwei[0]-1)*94+self.quwei[1]-1))
-	# 	char = hzk.read(32)
-	# 	offset = self.pixelSize * 0.2
-	# 	self.hanziSize = (16*self.pixelSize, 16*self.pixelSize)
-	# 	self.image = pygame.Surface(self.hanziSize)
-	# 	self.image.fill(Color('black'))
-	# 	self.color = Color('green')
-	# 	self.rect = self.image.get_rect()
-	# 	self.rect.topleft = (self.pos[0] - self.rect.w/2, self.pos[1] - self.rect.h/2)
-	# 	pointSize = (self.pixelSize, self.pixelSize)
-	# 	foreColor = pygame.Surface(pointSize)
-	# 	backColor = pygame.Surface(pointSize)
-	# 	pygame.draw.rect(foreColor, self.color, (0, 0, pointSize[1], pointSize[0]))
-
-	# 	for i in range(16):
-	# 		s = struct.unpack('h', char[2*i+1]+char[2*i])[0]
-	# 		for j in range(15, -1, -1):
-	# 			if (s & (1 << j)) is not 0:
-	# 				self.image.blit(foreColor, ((15-j)*pointSize[1], i*pointSize[0]))
-	# 				self.image.blit(foreColor, ((15-j)*pointSize[1] - offset, i*pointSize[0]))
-	# 				self.image.blit(foreColor, ((15-j)*pointSize[1] + offset, i*pointSize[0]))
-	# 				self.image.blit(foreColor, ((15-j)*pointSize[1], i*pointSize[0] - offset))
-	# 				self.image.blit(foreColor, ((15-j)*pointSize[1], i*pointSize[0] + offset))
-
-	# 	# pygame.image.save(self.image, 'style3.bmp')
-	# 	# img = cv2.imread('style3.bmp')
-	# 	img = pygame_to_cvimage(self.image)
-	# 	gray = cv2.cvtColor(img,cv2.COLOR_BGR2GRAY)
-	# 	ret, binary = cv2.threshold(gray,127,255,cv2.THRESH_BINARY)
-	# 	contours, hierarchy = cv2.findContours(binary,cv2.RETR_CCOMP,cv2.CHAIN_APPROX_SIMPLE)
-	# 	img_ = numpy.zeros((self.rect.w, self.rect.h, 3), numpy.uint8)
-	# 	cv2.drawContours(img_,contours,-1,(self.color.b, self.color.g, self.color.r),1)
-	# 	self.image = cvimage_to_pygame(img_)
-	# 	self.image.set_colorkey(0)
 
 clock = pygame.time.Clock()
 hanzi = Hanzi()
@@ -200,19 +158,6 @@ while True:
 		if event.type == KEYDOWN and event.key == K_SPACE:
 			background.blit(hanzi.image, hanzi.rect)
 			hanzi = Hanzi()
-		# if event.type == KEYDOWN and event.key == K_c:
-		# 	pygame.image.save(background, "bk.jpg")
-		# 	img = cv2.imread("bk.jpg")
-		# 	# arr = numpy.asarray(pygame.image.tostring(background, "RGBA"), dtype = numpy.uint32)
-		# 	# img = cv2.imdecode(arr, -1)
-		# 	gray = cv2.cvtColor(img,cv2.COLOR_BGR2GRAY)
-		# 	ret, binary = cv2.threshold(gray,127,255,cv2.THRESH_BINARY)
-
-		# 	contours, hierarchy = cv2.findContours(binary,cv2.RETR_CCOMP,cv2.CHAIN_APPROX_SIMPLE)
-		# 	cv2.drawContours(img,contours,-1,(0,0,255),20)
-
-		# 	cv2.imshow("img", img)
-		# 	cv2.waitKey(0)
 		hanzi.keySet(event);
 
 	hanzi.update(timePassed)
